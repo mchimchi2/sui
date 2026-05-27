@@ -1,119 +1,153 @@
 import React from "react";
-import { interpolate, useCurrentFrame } from "remotion";
+import { useCurrentFrame } from "remotion";
 
-type Mood = "neutral" | "surprised" | "worried" | "explaining";
-
+export type Mood = "neutral" | "surprised" | "worried" | "explaining";
 type Props = { mood: Mood; scale?: number };
 
 export const Character: React.FC<Props> = ({ mood, scale = 1 }) => {
   const frame = useCurrentFrame();
 
-  // Gentle idle bob
-  const bob = Math.sin(frame * 0.08) * 4;
+  const breatheY = Math.sin(frame * 0.06) * 2.5;
 
-  // Eye blink every ~90 frames
   const blinkCycle = frame % 90;
-  const isBlinking = blinkCycle > 84 && blinkCycle < 90;
-  const eyeScaleY = isBlinking ? 0.1 : 1;
+  const eyeH = blinkCycle > 85 ? 0.05 : 1;
 
-  // Mouth shape per mood
-  const mouthPath: Record<Mood, string> = {
-    neutral:    "M 36 58 Q 50 65 64 58",
-    explaining: "M 34 56 Q 50 68 66 56",
-    surprised:  "M 40 56 Q 50 70 60 56",
-    worried:    "M 36 62 Q 50 54 64 62",
-  };
+  const isTalking = mood === "explaining" || mood === "surprised";
+  const jawOpen = isTalking ? Math.max(0, Math.sin(frame * 0.38)) * 7 : 0;
 
-  // Eyebrow raise per mood
-  const eyebrowY: Record<Mood, number> = {
-    neutral: 0, explaining: -2, surprised: -8, worried: 3,
-  };
+  // Colors (monochrome anime style matching reference)
+  const SKIN  = "#FFFFFF";
+  const SKINSH = "#E4E4E4";
+  const HAIR  = "#1A1A1A";
+  const HOOD  = "#909098";
+  const HOODS = "#686870";
+  const OUT   = "#111111";
+  const W     = 4;
 
-  // Sweat drop for worried
-  const showSweat = mood === "worried" || mood === "surprised";
+  // Eyebrow adjustments per mood
+  const lbY  = mood === "surprised" ? -10 : mood === "worried" ?  5 : 0;
+  const rbY  = mood === "surprised" ? -10 : mood === "worried" ? -4 : 0;
+  const lbR  = mood === "worried"   ?  8  : 0;
+  const rbR  = mood === "worried"   ? -8  : 0;
+
+  // Arm paths per mood (arms drawn with thick stroke = hoodie sleeve)
+  const leftArm =
+    mood === "surprised"
+      ? "M 62 204 C 38 180 14 158  4 128"
+      : mood === "explaining"
+      ? "M 62 204 C 44 188 28 172 18 158"
+      : "M 62 204 C 44 236 28 278 20 322";
+
+  const rightArm =
+    mood === "explaining"
+      ? "M 218 204 C 238 174 258 138 270 100"
+      : mood === "surprised"
+      ? "M 218 204 C 242 180 266 158 276 128"
+      : mood === "worried"
+      ? "M 218 204 C 234 178 232 148 212 122"
+      : "M 218 204 C 236 236 252 278 260 322";
 
   return (
     <svg
-      viewBox="0 0 100 160"
-      width={180 * scale}
-      height={288 * scale}
-      style={{ transform: `translateY(${bob}px)`, overflow: "visible" }}
+      viewBox="0 0 280 420"
+      width={280 * scale}
+      height={420 * scale}
+      style={{ overflow: "visible" }}
     >
-      {/* Shadow */}
-      <ellipse cx="50" cy="158" rx="22" ry="5" fill="rgba(0,0,0,0.12)" />
+      {/* ── ARMS (behind body) ── */}
+      <path d={leftArm}  stroke={HOOD} strokeWidth={50} strokeLinecap="round" fill="none" />
+      <path d={leftArm}  stroke={OUT}  strokeWidth={W}  strokeLinecap="round" fill="none" opacity={0.18} />
+      <path d={rightArm} stroke={HOOD} strokeWidth={50} strokeLinecap="round" fill="none" />
+      <path d={rightArm} stroke={OUT}  strokeWidth={W}  strokeLinecap="round" fill="none" opacity={0.18} />
 
-      {/* Body - suit */}
-      <rect x="22" y="88" width="56" height="68" rx="12" fill="#2D4A8F" />
+      {/* ── BODY / HOODIE ── */}
+      <path d="M 62 200 L 28 420 L 252 420 L 218 200 Z" fill={HOOD} stroke={OUT} strokeWidth={W} strokeLinejoin="round" />
+      {/* Center shadow stripe */}
+      <path d="M 124 200 L 114 420 L 166 420 L 156 200 Z" fill={HOODS} opacity={0.55} />
+      {/* Pocket */}
+      <rect x="94" y="295" width="92" height="65" rx="8" fill={HOODS} stroke={OUT} strokeWidth="3" />
+      <line x1="140" y1="295" x2="140" y2="360" stroke={HOOD} strokeWidth="2" />
+      {/* Drawstring dots */}
+      <circle cx="116" cy="216" r="5" fill={HOODS} />
+      <circle cx="164" cy="216" r="5" fill={HOODS} />
 
-      {/* Shirt / inner */}
-      <rect x="42" y="88" width="16" height="50" rx="4" fill="#fff" />
+      {/* ── NECK ── */}
+      <rect x="120" y="162" width="40" height="46" rx="7" fill={SKIN} stroke={OUT} strokeWidth={W} />
 
-      {/* Tie */}
-      <polygon points="50,92 46,102 50,130 54,102" fill="#FF6B35" />
+      {/* ── HEAD (breathes gently) ── */}
+      <g transform={`translate(0, ${breatheY})`}>
+        {/* Ears */}
+        <ellipse cx="74"  cy="104" rx="10" ry="14" fill={SKIN} stroke={OUT} strokeWidth="3" />
+        <ellipse cx="206" cy="104" rx="10" ry="14" fill={SKIN} stroke={OUT} strokeWidth="3" />
 
-      {/* Left arm */}
-      <rect x="6" y="90" width="18" height="38" rx="9" fill="#2D4A8F" />
-      {/* Left hand */}
-      <circle cx="15" cy="132" r="9" fill="#FFD5A8" />
+        {/* Face */}
+        <ellipse cx="140" cy="100" rx="66" ry="72" fill={SKIN} stroke={OUT} strokeWidth={W} />
+        {/* Chin shadow */}
+        <ellipse cx="140" cy="156" rx="38" ry="10" fill={SKINSH} opacity={0.45} />
 
-      {/* Right arm */}
-      <rect x="76" y="90" width="18" height="38" rx="9" fill="#2D4A8F" />
-      {/* Right hand */}
-      <circle cx="85" cy="132" r="9" fill="#FFD5A8" />
+        {/* ── HAIR ── */}
+        {/* Top block */}
+        <path d="M 76 86 C 74 34 206 34 204 86 C 194 60 172 48 140 46 C 108 48 86 60 76 86 Z" fill={HAIR} />
+        {/* Side pieces */}
+        <ellipse cx="78"  cy="108" rx="16" ry="34" fill={HAIR} />
+        <ellipse cx="202" cy="108" rx="16" ry="34" fill={HAIR} />
 
-      {/* Legs */}
-      <rect x="28" y="148" width="18" height="12" rx="6" fill="#1a2f5e" />
-      <rect x="54" y="148" width="18" height="12" rx="6" fill="#1a2f5e" />
+        {/* ── EYEBROWS ── */}
+        <path
+          d={`M 108 ${74 + lbY} Q 121 ${68 + lbY} 134 ${74 + lbY}`}
+          stroke={HAIR} strokeWidth="4.5" fill="none" strokeLinecap="round"
+          transform={`rotate(${lbR}, 108, ${74 + lbY})`}
+        />
+        <path
+          d={`M 146 ${74 + rbY} Q 159 ${68 + rbY} 172 ${74 + rbY}`}
+          stroke={HAIR} strokeWidth="4.5" fill="none" strokeLinecap="round"
+          transform={`rotate(${rbR}, 172, ${74 + rbY})`}
+        />
 
-      {/* Neck */}
-      <rect x="43" y="82" width="14" height="12" rx="4" fill="#FFD5A8" />
+        {/* ── EYES ── */}
+        {/* Left */}
+        <ellipse cx="121" cy="96" rx="12" ry={13 * eyeH} fill="white" stroke={OUT} strokeWidth="2.5" />
+        {eyeH > 0.2 && <>
+          <ellipse cx="122" cy="97" rx="6.5" ry={6.5 * eyeH} fill={HAIR} />
+          <circle   cx="124" cy="93" r="2.4" fill="white" />
+        </>}
 
-      {/* Head */}
-      <ellipse cx="50" cy="60" rx="28" ry="30" fill="#FFD5A8" />
+        {/* Right */}
+        <ellipse cx="159" cy="96" rx="12" ry={13 * eyeH} fill="white" stroke={OUT} strokeWidth="2.5" />
+        {eyeH > 0.2 && <>
+          <ellipse cx="160" cy="97" rx="6.5" ry={6.5 * eyeH} fill={HAIR} />
+          <circle   cx="162" cy="93" r="2.4" fill="white" />
+        </>}
 
-      {/* Hair */}
-      <ellipse cx="50" cy="33" rx="28" ry="12" fill="#3D2B1F" />
-      <rect x="22" y="33" width="56" height="10" rx="4" fill="#3D2B1F" />
+        {/* ── NOSE ── */}
+        <path d="M 137 118 Q 140 124 143 118" stroke="#C8B090" strokeWidth="2.2" fill="none" strokeLinecap="round" />
 
-      {/* Left eyebrow */}
-      <path
-        d={`M 32 ${42 + eyebrowY[mood]} Q 38 ${39 + eyebrowY[mood]} 44 ${42 + eyebrowY[mood]}`}
-        stroke="#3D2B1F" strokeWidth="2.5" fill="none" strokeLinecap="round"
-      />
-      {/* Right eyebrow */}
-      <path
-        d={`M 56 ${42 + eyebrowY[mood]} Q 62 ${39 + eyebrowY[mood]} 68 ${42 + eyebrowY[mood]}`}
-        stroke="#3D2B1F" strokeWidth="2.5" fill="none" strokeLinecap="round"
-      />
+        {/* ── MOUTH ── */}
+        {mood === "worried" ? (
+          <path d="M 122 136 Q 140 129 158 136" stroke={OUT} strokeWidth="3" fill="none" strokeLinecap="round" />
+        ) : jawOpen > 1.5 ? (
+          <>
+            <path
+              d={`M 120 ${130 + jawOpen * 0.25} Q 140 ${139 + jawOpen} 160 ${130 + jawOpen * 0.25}`}
+              stroke={OUT} strokeWidth="3" fill="white" strokeLinecap="round"
+            />
+            <path
+              d={`M 128 ${133 + jawOpen * 0.5} Q 140 ${136 + jawOpen * 0.55} 152 ${133 + jawOpen * 0.5}`}
+              stroke="#E0A0A0" strokeWidth="1.8" fill="none"
+            />
+          </>
+        ) : (
+          <path d="M 124 133 Q 140 141 156 133" stroke={OUT} strokeWidth="3" fill="none" strokeLinecap="round" />
+        )}
 
-      {/* Left eye */}
-      <ellipse cx="38" cy="50" rx="5" ry={5 * eyeScaleY} fill="#3D2B1F" />
-      <circle cx="39.5" cy="48.5" r="1.5" fill="#fff" />
-
-      {/* Right eye */}
-      <ellipse cx="62" cy="50" rx="5" ry={5 * eyeScaleY} fill="#3D2B1F" />
-      <circle cx="63.5" cy="48.5" r="1.5" fill="#fff" />
-
-      {/* Mouth */}
-      <path
-        d={mouthPath[mood]}
-        stroke="#3D2B1F" strokeWidth="2.5" fill="none" strokeLinecap="round"
-      />
-
-      {/* Cheek blush */}
-      {(mood === "surprised" || mood === "explaining") && (
-        <>
-          <ellipse cx="28" cy="56" rx="6" ry="4" fill="rgba(255,150,120,0.35)" />
-          <ellipse cx="72" cy="56" rx="6" ry="4" fill="rgba(255,150,120,0.35)" />
-        </>
-      )}
-
-      {/* Sweat drop */}
-      {showSweat && (
-        <g>
-          <path d="M 76 38 Q 79 32 76 28 Q 73 32 76 38 Z" fill="#7EC8E3" />
-        </g>
-      )}
+        {/* Blush */}
+        {(mood === "explaining" || mood === "surprised") && (
+          <>
+            <ellipse cx="98"  cy="118" rx="15" ry="9" fill="rgba(255,145,125,0.32)" />
+            <ellipse cx="182" cy="118" rx="15" ry="9" fill="rgba(255,145,125,0.32)" />
+          </>
+        )}
+      </g>
     </svg>
   );
 };

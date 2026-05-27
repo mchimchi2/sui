@@ -7,6 +7,8 @@ import {
   useVideoConfig,
   Sequence,
 } from "remotion";
+import { Character } from "../components/Character";
+import { Background } from "../components/Background";
 import { DangerStars } from "../components/DangerStars";
 
 export type NgWord = {
@@ -18,185 +20,174 @@ export type NgWord = {
   category: string;
 };
 
-// Timing constants (frames at 30fps)
-const HOOK_END = 45;        // 0-1.5s  hook
-const PHRASE_END = 120;     // 1.5-4s  NGワード表示
-const BRIDGE_END = 165;     // 4-5.5s  「実は…」
-const REVEAL_END = 270;     // 5.5-9s  本当の意味
-const DANGER_END = 345;     // 9-11.5s 危険度
-const CTA_END = 390;        // 11.5-13s CTA
+// Timing (frames @ 30fps)
+const HOOK_END    = 50;   // 0〜1.7s
+const PHRASE_END  = 130;  // 1.7〜4.3s
+const BRIDGE_END  = 175;  // 4.3〜5.8s
+const REVEAL_END  = 285;  // 5.8〜9.5s
+const DANGER_END  = 360;  // 9.5〜12s
+const CTA_END     = 420;  // 12〜14s
 
 export const DURATION = CTA_END;
 
 type Props = { word: NgWord };
 
+const dangerMeta = {
+  1: { color: "#34C759", label: "参考程度", bg: "rgba(52,199,89,0.15)" },
+  2: { color: "#FF9500", label: "注意",     bg: "rgba(255,149,0,0.15)"  },
+  3: { color: "#FF3B30", label: "要注意！", bg: "rgba(255,59,48,0.15)"  },
+} as const;
+
 export const KyujinhyoCard: React.FC<Props> = ({ word }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const fadeIn = (start: number, duration = 20) =>
-    interpolate(frame, [start, start + duration], [0, 1], {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
+  const sp = (start: number, cfg = {}) =>
+    spring({ frame: frame - start, fps, config: { damping: 14, stiffness: 160, ...cfg } });
+
+  const fade = (start: number, dur = 18) =>
+    interpolate(frame, [start, start + dur], [0, 1], {
+      extrapolateLeft: "clamp", extrapolateRight: "clamp",
     });
 
-  const slideUp = (start: number) =>
-    spring({ frame: frame - start, fps, config: { damping: 14, stiffness: 160 } });
+  const fadeOut = (start: number, dur = 12) =>
+    interpolate(frame, [start, start + dur], [1, 0], {
+      extrapolateLeft: "clamp", extrapolateRight: "clamp",
+    });
 
-  const dangerColor =
-    word.danger_level === 3 ? "#FF3B30" : word.danger_level === 2 ? "#FF9500" : "#34C759";
+  const slideY = (start: number, from = 40) =>
+    interpolate(sp(start), [0, 1], [from, 0]);
 
-  const dangerLabel =
-    word.danger_level === 3 ? "要注意" : word.danger_level === 2 ? "注意" : "参考程度";
+  const { color, label, bg } = dangerMeta[word.danger_level as 1|2|3];
+
+  // Character mood per phase
+  const mood =
+    frame < PHRASE_END  ? "explaining" :
+    frame < BRIDGE_END  ? "neutral"    :
+    frame < REVEAL_END  ? "surprised"  :
+    frame < DANGER_END  ? "worried"    : "explaining";
+
+  // Character bounce on BRIDGE
+  const charBounce =
+    frame >= BRIDGE_END - 5 && frame < BRIDGE_END + 20
+      ? Math.sin((frame - BRIDGE_END) * 0.6) * 18
+      : 0;
 
   return (
-    <AbsoluteFill
-      style={{
-        background: "linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #1a1a2e 100%)",
-        fontFamily:
-          '"Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif',
-        overflow: "hidden",
-      }}
-    >
-      {/* Background grid lines */}
-      <AbsoluteFill
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
-      />
+    <AbsoluteFill style={{ fontFamily: '"Hiragino Sans","Noto Sans JP",sans-serif' }}>
+      <Background />
 
-      {/* HOOK */}
-      <Sequence from={0} durationInFrames={HOOK_END + 15}>
+      {/* ===== HOOK ===== */}
+      <Sequence from={0} durationInFrames={HOOK_END + 12}>
         <AbsoluteFill
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "0 60px",
-            opacity: frame < HOOK_END ? 1 : fadeIn(HOOK_END, 15) < 0.5 ? 1 - (frame - HOOK_END) / 15 : 0,
+            display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "flex-start",
+            paddingTop: 100,
+            opacity: frame > HOOK_END ? fadeOut(HOOK_END) : 1,
           }}
         >
           <div
             style={{
-              opacity: fadeIn(0),
-              transform: `translateY(${interpolate(slideUp(0), [0, 1], [40, 0])}px)`,
-              fontSize: 36,
-              color: "#FF3B30",
-              fontWeight: 900,
-              letterSpacing: 4,
-              marginBottom: 20,
+              opacity: fade(0), transform: `translateY(${slideY(0)}px)`,
+              background: "#2D4A8F", borderRadius: 16,
+              padding: "18px 44px", marginBottom: 24,
             }}
           >
-            ⚠️ 求人票 裏読み辞典
+            <span style={{ color: "#fff", fontSize: 32, fontWeight: 900, letterSpacing: 3 }}>
+              ⚠️ 求人票 裏読み辞典
+            </span>
           </div>
           <div
             style={{
-              opacity: fadeIn(10),
-              transform: `translateY(${interpolate(slideUp(10), [0, 1], [40, 0])}px)`,
-              fontSize: 44,
-              color: "#fff",
-              fontWeight: 800,
-              textAlign: "center",
-              lineHeight: 1.4,
+              opacity: fade(12), transform: `translateY(${slideY(12)}px)`,
+              fontSize: 52, fontWeight: 900, color: "#1a1a1a",
+              textAlign: "center", lineHeight: 1.45,
+              textShadow: "0 2px 12px rgba(255,255,255,0.9)",
             }}
           >
-            この言葉の
-            <br />
-            本当の意味、
-            <br />
+            この求人票の言葉<br />
+            本当の意味<br />
             知ってますか？
           </div>
         </AbsoluteFill>
       </Sequence>
 
-      {/* PHRASE */}
-      <Sequence from={HOOK_END} durationInFrames={PHRASE_END - HOOK_END + 20}>
+      {/* ===== NG PHRASE ===== */}
+      <Sequence from={HOOK_END} durationInFrames={PHRASE_END - HOOK_END + 12}>
         <AbsoluteFill
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "0 60px",
-            opacity: frame >= PHRASE_END ? interpolate(frame, [PHRASE_END, PHRASE_END + 20], [1, 0], { extrapolateRight: "clamp" }) : 1,
+            display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "flex-start",
+            paddingTop: 90,
+            opacity: frame > PHRASE_END ? fadeOut(PHRASE_END) : 1,
           }}
         >
-          <div
-            style={{
-              opacity: fadeIn(HOOK_END, 15),
-              fontSize: 28,
-              color: "rgba(255,255,255,0.5)",
-              fontWeight: 600,
-              letterSpacing: 3,
-              marginBottom: 24,
-            }}
-          >
-            # {word.category}
+          {/* Category tag */}
+          <div style={{ opacity: fade(HOOK_END), marginBottom: 20 }}>
+            <span style={{
+              background: "#FF6B35", color: "#fff",
+              borderRadius: 50, padding: "8px 28px",
+              fontSize: 28, fontWeight: 700, letterSpacing: 2,
+            }}>
+              # {word.category}
+            </span>
           </div>
+
+          {/* NGワード card */}
           <div
             style={{
-              opacity: fadeIn(HOOK_END + 5, 20),
-              transform: `scale(${interpolate(slideUp(HOOK_END + 5), [0, 1], [0.7, 1])})`,
-              background: "rgba(255,59,48,0.15)",
-              border: "3px solid #FF3B30",
-              borderRadius: 20,
-              padding: "32px 48px",
-              textAlign: "center",
+              opacity: fade(HOOK_END + 6),
+              transform: `scale(${interpolate(sp(HOOK_END + 6), [0, 1], [0.85, 1])})`,
+              background: "rgba(255,255,255,0.92)",
+              border: `4px solid #2D4A8F`,
+              borderRadius: 24, padding: "32px 48px",
+              textAlign: "center", marginBottom: 28,
+              boxShadow: "0 8px 32px rgba(45,74,143,0.18)",
+              maxWidth: 900,
             }}
           >
-            <div style={{ fontSize: 24, color: "#FF3B30", fontWeight: 700, marginBottom: 12 }}>
-              求人票でよく見るこの言葉
+            <div style={{ fontSize: 26, color: "#FF6B35", fontWeight: 700, marginBottom: 10 }}>
+              求人票によく書かれている言葉
             </div>
-            <div
-              style={{
-                fontSize: 58,
-                color: "#ffffff",
-                fontWeight: 900,
-                lineHeight: 1.3,
-              }}
-            >
+            <div style={{ fontSize: 62, color: "#1a1a1a", fontWeight: 900, lineHeight: 1.3 }}>
               「{word.phrase}」
             </div>
           </div>
+
+          {/* Surface meaning */}
           <div
             style={{
-              opacity: fadeIn(HOOK_END + 20, 15),
-              marginTop: 32,
-              fontSize: 30,
-              color: "rgba(255,255,255,0.6)",
-              textAlign: "center",
-              lineHeight: 1.6,
+              opacity: fade(HOOK_END + 22),
+              transform: `translateY(${slideY(HOOK_END + 22)}px)`,
+              background: "rgba(255,255,255,0.75)", borderRadius: 16,
+              padding: "18px 36px", textAlign: "center",
+              maxWidth: 860,
             }}
           >
-            表向きの意味は
-            <br />
-            「{word.surface_meaning}」
+            <span style={{ fontSize: 30, color: "#555", lineHeight: 1.6 }}>
+              表向き「{word.surface_meaning}」
+            </span>
           </div>
         </AbsoluteFill>
       </Sequence>
 
-      {/* BRIDGE */}
-      <Sequence from={PHRASE_END} durationInFrames={BRIDGE_END - PHRASE_END + 15}>
+      {/* ===== BRIDGE ===== */}
+      <Sequence from={PHRASE_END} durationInFrames={BRIDGE_END - PHRASE_END + 12}>
         <AbsoluteFill
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            opacity: frame >= BRIDGE_END ? interpolate(frame, [BRIDGE_END, BRIDGE_END + 15], [1, 0], { extrapolateRight: "clamp" }) : 1,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            opacity: frame > BRIDGE_END ? fadeOut(BRIDGE_END) : 1,
           }}
         >
           <div
             style={{
-              opacity: fadeIn(PHRASE_END, 10),
-              transform: `scale(${interpolate(slideUp(PHRASE_END), [0, 1], [0.5, 1])})`,
-              fontSize: 80,
-              color: "#FF9500",
-              fontWeight: 900,
-              textAlign: "center",
-              lineHeight: 1.4,
+              opacity: fade(PHRASE_END, 10),
+              transform: `scale(${interpolate(sp(PHRASE_END, { stiffness: 300, damping: 10 }), [0, 1], [0.5, 1])})`,
+              fontSize: 92, fontWeight: 900,
+              color: "#2D4A8F",
+              textAlign: "center", lineHeight: 1.3,
+              textShadow: "0 4px 20px rgba(45,74,143,0.25)",
             }}
           >
             でも実は…
@@ -204,122 +195,134 @@ export const KyujinhyoCard: React.FC<Props> = ({ word }) => {
         </AbsoluteFill>
       </Sequence>
 
-      {/* REVEAL */}
-      <Sequence from={BRIDGE_END} durationInFrames={REVEAL_END - BRIDGE_END + 20}>
+      {/* ===== REAL MEANING ===== */}
+      <Sequence from={BRIDGE_END} durationInFrames={REVEAL_END - BRIDGE_END + 12}>
         <AbsoluteFill
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "0 60px",
-            opacity: frame >= REVEAL_END ? interpolate(frame, [REVEAL_END, REVEAL_END + 20], [1, 0], { extrapolateRight: "clamp" }) : 1,
+            display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "flex-start",
+            paddingTop: 80,
+            opacity: frame > REVEAL_END ? fadeOut(REVEAL_END) : 1,
           }}
         >
-          <div
-            style={{
-              opacity: fadeIn(BRIDGE_END, 10),
-              fontSize: 30,
-              color: "#FF3B30",
-              fontWeight: 800,
-              letterSpacing: 4,
-              marginBottom: 28,
-            }}
-          >
-            💀 本当の意味
+          <div style={{ opacity: fade(BRIDGE_END, 10), marginBottom: 20 }}>
+            <span style={{
+              background: color, color: "#fff",
+              borderRadius: 50, padding: "10px 36px",
+              fontSize: 30, fontWeight: 900, letterSpacing: 3,
+            }}>
+              💀 本当の意味
+            </span>
           </div>
           <div
             style={{
-              opacity: fadeIn(BRIDGE_END + 8, 25),
-              transform: `translateY(${interpolate(slideUp(BRIDGE_END + 8), [0, 1], [50, 0])}px)`,
-              background: "rgba(255,59,48,0.2)",
-              border: "2px solid rgba(255,59,48,0.6)",
-              borderRadius: 24,
-              padding: "40px 48px",
+              opacity: fade(BRIDGE_END + 8),
+              transform: `translateY(${slideY(BRIDGE_END + 8, 50)}px)`,
+              background: "rgba(255,255,255,0.93)",
+              border: `4px solid ${color}`,
+              borderRadius: 24, padding: "36px 48px",
               textAlign: "center",
+              boxShadow: `0 8px 40px ${bg}`,
+              maxWidth: 920,
             }}
           >
-            <div
-              style={{
-                fontSize: 48,
-                color: "#ffffff",
-                fontWeight: 800,
-                lineHeight: 1.5,
-              }}
-            >
+            <div style={{ fontSize: 50, color: "#1a1a1a", fontWeight: 800, lineHeight: 1.5 }}>
               {word.real_meaning}
+            </div>
+          </div>
+
+          {/* Speech bubble from character */}
+          <div
+            style={{
+              opacity: fade(BRIDGE_END + 25),
+              transform: `translateY(${slideY(BRIDGE_END + 25, 30)}px)`,
+              marginTop: 28, background: "#fff",
+              border: "3px solid #2D4A8F", borderRadius: 16,
+              padding: "14px 32px",
+              position: "relative",
+            }}
+          >
+            <div style={{ fontSize: 28, color: "#2D4A8F", fontWeight: 700 }}>
+              ← 僕も入社前に知りたかった…
             </div>
           </div>
         </AbsoluteFill>
       </Sequence>
 
-      {/* DANGER LEVEL */}
-      <Sequence from={REVEAL_END} durationInFrames={DANGER_END - REVEAL_END + 15}>
+      {/* ===== DANGER LEVEL ===== */}
+      <Sequence from={REVEAL_END} durationInFrames={DANGER_END - REVEAL_END + 12}>
         <AbsoluteFill
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
+            display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "center",
             gap: 24,
-            opacity: frame >= DANGER_END ? interpolate(frame, [DANGER_END, DANGER_END + 15], [1, 0], { extrapolateRight: "clamp" }) : 1,
+            opacity: frame > DANGER_END ? fadeOut(DANGER_END) : 1,
           }}
         >
-          <div style={{ opacity: fadeIn(REVEAL_END, 15), fontSize: 36, color: "#fff", fontWeight: 700 }}>
+          <div style={{ opacity: fade(REVEAL_END, 12), fontSize: 38, color: "#1a1a1a", fontWeight: 800 }}>
             危険度
           </div>
           <DangerStars level={word.danger_level} delay={REVEAL_END + 10} />
           <div
             style={{
-              opacity: fadeIn(REVEAL_END + 20, 15),
-              background: dangerColor,
-              borderRadius: 50,
-              padding: "12px 40px",
-              fontSize: 36,
-              color: "#fff",
-              fontWeight: 900,
-              letterSpacing: 4,
+              opacity: fade(REVEAL_END + 22),
+              transform: `scale(${interpolate(sp(REVEAL_END + 22), [0, 1], [0.7, 1])})`,
+              background: color, borderRadius: 50,
+              padding: "16px 52px",
+              fontSize: 40, color: "#fff", fontWeight: 900, letterSpacing: 4,
             }}
           >
-            {dangerLabel}
+            {label}
           </div>
         </AbsoluteFill>
       </Sequence>
 
-      {/* CTA */}
+      {/* ===== CTA ===== */}
       <Sequence from={DANGER_END} durationInFrames={CTA_END - DANGER_END}>
         <AbsoluteFill
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 28,
-            padding: "0 60px",
+            display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "flex-start",
+            paddingTop: 100, gap: 24,
           }}
         >
           <div
             style={{
-              opacity: fadeIn(DANGER_END, 15),
-              transform: `scale(${interpolate(slideUp(DANGER_END), [0, 1], [0.8, 1])})`,
-              fontSize: 44,
-              color: "#fff",
-              fontWeight: 900,
-              textAlign: "center",
-              lineHeight: 1.5,
+              opacity: fade(DANGER_END),
+              transform: `scale(${interpolate(sp(DANGER_END), [0, 1], [0.85, 1])})`,
+              background: "#2D4A8F", borderRadius: 20,
+              padding: "28px 52px", textAlign: "center",
+              boxShadow: "0 8px 32px rgba(45,74,143,0.3)",
             }}
           >
-            転職活動中の人は
-            <br />
-            保存して活用して！
+            <div style={{ fontSize: 46, color: "#fff", fontWeight: 900, lineHeight: 1.5 }}>
+              転職活動中の人は<br />保存して活用して！
+            </div>
           </div>
-          <div style={{ opacity: fadeIn(DANGER_END + 15, 15), fontSize: 30, color: "rgba(255,255,255,0.6)", textAlign: "center", lineHeight: 1.8 }}>
-            #転職 #求人票 #ブラック企業
-            <br />
-            #転職活動 #仕事探し
+          <div style={{ opacity: fade(DANGER_END + 18), fontSize: 28, color: "#555", textAlign: "center", lineHeight: 2 }}>
+            #転職 #求人票 #ブラック企業<br />#転職活動 #仕事探し
           </div>
         </AbsoluteFill>
       </Sequence>
+
+      {/* ===== CHARACTER (always visible, reacts to phase) ===== */}
+      <AbsoluteFill
+        style={{
+          display: "flex", alignItems: "flex-end",
+          justifyContent: "flex-end",
+          paddingBottom: 340, paddingRight: 40,
+          pointerEvents: "none",
+        }}
+      >
+        <div
+          style={{
+            opacity: fade(6),
+            transform: `translateY(${charBounce}px)`,
+          }}
+        >
+          <Character mood={mood} scale={1.1} />
+        </div>
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 };

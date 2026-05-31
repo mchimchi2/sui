@@ -1,0 +1,242 @@
+[
+  {
+    "id": 1,
+    "phrase": "アットホームな職場",
+    "surface_meaning": "家庭的で温かい雰囲気の職場",
+    "real_meaning": "上下関係が厳しく、断れない空気が蔓延している",
+    "danger_level": 3,
+    "category": "職場環境"
+  },
+  {
+    "id": 2,
+    "phrase": "風通しの良い職場",
+    "surface_meaning": "意見が言いやすいオープンな環境",
+    "real_meaning": "情報管理が甘く、秘密が筒抜けになりやすい",
+    "danger_level": 2,
+    "category": "職場環境"
+  },
+  {
+    "id": 3,
+    "phrase": "やりがいのある仕事",
+    "surface_meaning": "充実感を感じられる業務内容",
+    "real_meaning": "給与が低い代わりに「やりがい」で働かせようとしている",
+    "danger_level": 3,
+    "category": "待遇"
+  },
+  {
+    "id": 4,
+    "phrase": "若手が活躍できる環境",
+    "surface_meaning": "若いうちからチャンスがある",
+    "real_meaning": "ベテランが次々と辞めていて慢性的な人手不足",
+    "danger_level": 3,
+    "category": "組織状態"
+  },
+  {
+    "id": 5,
+    "phrase": "急成長中のベンチャー",
+    "surface_meaning": "勢いのある会社でスキルアップできる",
+    "real_meaning": "組織整備が追いつかず、残業・休日出勤が常態化",
+    "danger_level": 2,
+    "category": "組織状態"
+  },
+  {
+    "id": 6,
+    "phrase": "幅広い業務をお任せします",
+    "surface_meaning": "多様な経験が積める",
+    "real_meaning": "何でも屋になるため専門スキルが身につかない",
+    "danger_level": 2,
+    "category": "業務内容"
+  },
+  {
+    "id": 7,
+    "phrase": "実力主義・成果主義",
+    "surface_meaning": "頑張りが正当に評価される",
+    "real_meaning": "評価基準が不透明で、結果的に搾取される可能性がある",
+    "danger_level": 2,
+    "category": "評価制度"
+  },
+  {
+    "id": 8,
+    "phrase": "チャレンジできる環境",
+    "surface_meaning": "新しいことに挑戦できる",
+    "real_meaning": "失敗しても自己責任で会社のサポートがない",
+    "danger_level": 2,
+    "category": "業務内容"
+  },
+  {
+    "id": 9,
+    "phrase": "年収300万〜800万円",
+    "surface_meaning": "頑張れば高収入も狙える",
+    "real_meaning": "ほぼ全員が下限付近。上限は役員クラスの数字",
+    "danger_level": 3,
+    "category": "給与"
+  },
+  {
+    "id": 10,
+    "phrase": "残業少なめ",
+    "surface_meaning": "ワークライフバランスが取れる",
+    "real_meaning": "「少なめ」の基準が月40〜60時間の場合がある",
+    "danger_level": 3,
+    "category": "労働時間"
+  },
+  {
+    "id": 11,
+    "phrase": "週休2日制",
+    "surface_meaning": "土日休みで休日が多い",
+    "real_meaning": "「完全週休2日制」と違い、月1回だけ2日休めればOK",
+    "danger_level": 3,
+    "category": "休日"
+  },
+  {
+    "id": 12,
+    "phrase": "正社員登用実績あり",
+    "surface_meaning": "アルバイトから正社員になれる",
+    "real_meaning": "「実績あり」は1名だけでも成立する表現",
+    "danger_level": 3,
+    "category": "雇用形態"
+  },
+  {
+    "id": 13,
+    "phrase": "社員定着率90%以上",
+    "surface_meaning": "離職率が低く働きやすい職場",
+    "real_meaning": "計測期間・母数が不明。直近3ヶ月だけの数字かもしれない",
+    "danger_level": 2,
+    "category": "職場環境"
+  },
+  {
+    "id": 14,
+    "phrase": "経験・スキル不問",
+    "surface_meaning": "未経験でも歓迎してくれる",
+    "real_meaning": "誰でもできる単純作業か、スキルが育たない環境",
+    "danger_level": 1,
+    "category": "採用条件"
+  },
+  {
+    "id": 15,
+    "phrase": "選考は書類不要・面接1回",
+    "surface_meaning": "採用プロセスが簡単",
+    "real_meaning": "選り好みできないほど深刻な人手不足のサイン",
+    "danger_level": 3,
+    "category": "採用条件"
+  },
+  {
+    "id": 16,
+    "phrase": "グローバルに活躍できる",
+    "surface_meaning": "海外でのキャリアを築ける",
+    "real_meaning": "断れない海外転勤の可能性がある",
+    "danger_level": 2,
+    "category": "業務内容"
+  },
+  {
+    "id": 17,
+    "phrase": "フラットな組織",
+    "surface_meaning": "上下関係がなく自由に働ける",
+    "real_meaning": "役職も昇進の仕組みもなく、キャリアパスが見えない",
+    "danger_level": 2,
+    "category": "組織状態"
+  },
+  {
+    "id": 18,
+    "phrase": "自己成長できる環境",
+    "surface_meaning": "会社がサポートしてくれる",
+    "real_meaning": "研修費は自己負担、自分でOJTするしかない",
+    "danger_level": 2,
+    "category": "教育制度"
+  },
+  {
+    "id": 19,
+    "phrase": "業績好調につき増員",
+    "surface_meaning": "会社が伸びていて安定している",
+    "real_meaning": "離職者補充の可能性。本当に好調なら外部に公開しない",
+    "danger_level": 2,
+    "category": "組織状態"
+  },
+  {
+    "id": 20,
+    "phrase": "社員同士の仲が良い",
+    "surface_meaning": "職場の人間関係が良好",
+    "real_meaning": "プライベートへの干渉が強く、飲み会強制の可能性",
+    "danger_level": 2,
+    "category": "職場環境"
+  },
+  {
+    "id": 21,
+    "phrase": "コミュニケーション能力が高い方",
+    "surface_meaning": "チームワークを大切にする職場",
+    "real_meaning": "体育会系文化で、声が大きいだけで評価されやすい",
+    "danger_level": 2,
+    "category": "採用条件"
+  },
+  {
+    "id": 22,
+    "phrase": "研修制度充実",
+    "surface_meaning": "入社後もしっかり育ててもらえる",
+    "real_meaning": "研修期間中は低賃金・みなし残業で使われる可能性",
+    "danger_level": 2,
+    "category": "教育制度"
+  },
+  {
+    "id": 23,
+    "phrase": "基本給＋各種手当",
+    "surface_meaning": "給与の内訳が充実している",
+    "real_meaning": "各種手当を含めた総額が提示されており基本給は低い",
+    "danger_level": 3,
+    "category": "給与"
+  },
+  {
+    "id": 24,
+    "phrase": "未経験歓迎",
+    "surface_meaning": "新しいキャリアに挑戦できる",
+    "real_meaning": "経験者に見向きもされない業種・職種の可能性",
+    "danger_level": 1,
+    "category": "採用条件"
+  },
+  {
+    "id": 25,
+    "phrase": "自由な社風",
+    "surface_meaning": "働き方の自由度が高い",
+    "real_meaning": "ルール・評価基準が曖昧で、失敗の責任は自分持ち",
+    "danger_level": 2,
+    "category": "職場環境"
+  },
+  {
+    "id": 26,
+    "phrase": "年齢不問",
+    "surface_meaning": "年齢に関係なく活躍できる",
+    "real_meaning": "実際は若手だけを求めており、文字通りの意味ではない",
+    "danger_level": 1,
+    "category": "採用条件"
+  },
+  {
+    "id": 27,
+    "phrase": "新規事業の立ち上げに携わる",
+    "surface_meaning": "ゼロから事業を作れるチャンス",
+    "real_meaning": "成功実績がない実験台にされる可能性がある",
+    "danger_level": 2,
+    "category": "業務内容"
+  },
+  {
+    "id": 28,
+    "phrase": "みなし残業代含む",
+    "surface_meaning": "残業代が最初から給与に含まれている",
+    "real_meaning": "超過分は払われず、事実上の固定残業を強いられる",
+    "danger_level": 3,
+    "category": "給与"
+  },
+  {
+    "id": 29,
+    "phrase": "明るく元気な方を歓迎",
+    "surface_meaning": "ポジティブな職場環境",
+    "real_meaning": "常に高テンションを求められる体育会系職場",
+    "danger_level": 2,
+    "category": "採用条件"
+  },
+  {
+    "id": 30,
+    "phrase": "常時募集中",
+    "surface_meaning": "随時採用で入社しやすい",
+    "real_meaning": "慢性的な人手不足で常に辞める人がいる状態",
+    "danger_level": 3,
+    "category": "組織状態"
+  }
+]

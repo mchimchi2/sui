@@ -1,0 +1,21 @@
+{
+  "name": "tiktok-tensyoku",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "studio": "remotion studio",
+    "render:single": "remotion render kyujinhyo-01 out/kyujinhyo-01.mp4",
+    "render:all": "node scripts/render-all.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@remotion/cli": "^4.0.468",
+    "@remotion/player": "^4.0.468",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "remotion": "^4.0.468"
+  }
+}

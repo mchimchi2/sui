@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>電力単価トラッカー | 大手電力10社</title>
+<style>
+  :root {
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --text: #1a2433;
+    --muted: #5b6b7f;
+    --border: #dde3ea;
+    --accent: #0b6e4f;
+    --accent-soft: #e6f3ee;
+    --warn: #b45309;
+    --warn-soft: #fef3e2;
+    --input-bg: #fffbe8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10161f;
+      --card: #1a2230;
+      --text: #e6ecf4;
+      --muted: #9aa8ba;
+      --border: #2c3748;
+      --accent: #3ecf95;
+      --accent-soft: #12362a;
+      --warn: #f0a04b;
+      --warn-soft: #3a2a12;
+      --input-bg: #2c2a1a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Hiragino Sans", "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+  }
+  header h1 { margin: 0; font-size: 20px; }
+  header p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+  main { padding: 20px 24px 60px; max-width: 1500px; margin: 0 auto; }
+
+  .toolbar {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px; margin-bottom: 16px;
+  }
+  .toolbar .field { display: flex; flex-direction: column; gap: 3px; }
+  .toolbar label { font-size: 11px; color: var(--muted); font-weight: 600; }
+  .toolbar input, .toolbar select {
+    padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px;
+    background: var(--bg); color: var(--text); font-size: 13px; width: 110px;
+  }
+  .toolbar .spacer { flex: 1; }
+  button {
+    padding: 8px 14px; border: 1px solid var(--border); border-radius: 7px;
+    background: var(--card); color: var(--text); font-size: 13px;
+    cursor: pointer; font-weight: 600;
+  }
+  button:hover { border-color: var(--accent); color: var(--accent); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.primary:hover { opacity: .9; color: #fff; }
+
+  .banner {
+    background: var(--warn-soft); color: var(--warn);
+    border: 1px solid var(--warn); border-radius: 8px;
+    padding: 10px 14px; margin-bottom: 16px; font-size: 13px;
+  }
+
+  .table-wrap {
+    overflow-x: auto; background: var(--card);
+    border: 1px solid var(--border); border-radius: 10px;
+  }
+  table { border-collapse: collapse; width: 100%; min-width: 1280px; }
+  th, td {
+    padding: 8px 10px; border-bottom: 1px solid var(--border);
+    text-align: right; white-space: nowrap;
+  }
+  th {
+    background: var(--accent-soft); color: var(--text);
+    font-size: 12px; position: sticky; top: 0;
+  }
+  th.l, td.l { text-align: left; }
+  td.num { font-variant-numeric: tabular-nums; }
+  td .unit { color: var(--muted); font-size: 11px; margin-left: 2px; }
+  tr:last-child td { border-bottom: none; }
+  td.missing { color: var(--warn); font-weight: 600; }
+  td.total { font-weight: 700; color: var(--accent); font-size: 15px; }
+  td .date-badge {
+    display: inline-block; background: var(--accent-soft); color: var(--accent);
+    border-radius: 5px; padding: 1px 7px; font-size: 12px; font-weight: 600;
+  }
+  td a { color: var(--accent); text-decoration: none; font-size: 12px; }
+  td a:hover { text-decoration: underline; }
+  td input.usage {
+    width: 90px; padding: 5px 7px; border: 1px solid var(--border);
+    border-radius: 6px; background: var(--input-bg); color: var(--text);
+    text-align: right; font-size: 13px;
+  }
+  td[contenteditable="true"] {
+    background: var(--input-bg); outline: 2px dashed var(--warn); outline-offset: -2px;
+  }
+  .note { color: var(--muted); font-size: 11px; }
+  footer { margin-top: 20px; color: var(--muted); font-size: 12px; }
+  footer ul { margin: 6px 0 0; padding-left: 20px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>⚡ 電力単価トラッカー — 大手電力10社(高圧・急速充電器向け)</h1>
+  <p>単価は税込。燃料費調整は毎月・再エネ賦課金は毎年5月に改定されるため、更新のうえ「更新日」を最新化してください。使用量を入力すると月額料金を自動試算します。</p>
+</header>
+<main>
+  <div class="banner" id="banner"></div>
+
+  <div class="toolbar">
+    <div class="field">
+      <label>計算対象月(夏季判定 7〜9月)</label>
+      <select id="targetMonth"></select>
+    </div>
+    <div class="field">
+      <label>力率(%) ※基本料金×(185−力率)/100</label>
+      <input type="number" id="powerFactor" value="85" min="60" max="100" step="1">
+    </div>
+    <div class="field">
+      <label>再エネ賦課金(円/kWh・全社共通)</label>
+      <input type="number" id="levy" step="0.01">
+    </div>
+    <div class="spacer"></div>
+    <button id="editBtn">✏️ 単価を編集</button>
+    <button id="exportBtn">⬇ JSONエクスポート</button>
+    <button id="importBtn">⬆ JSONインポート</button>
+    <input type="file" id="importFile" accept=".json" style="display:none">
+    <button id="resetBtn">初期データに戻す</button>
+    <input type="file" style="display:none">
+  </div>
+
+  <div class="table-wrap">
+    <table id="rateTable">
+      <thead>
+        <tr>
+          <th class="l">電力会社</th>
+          <th class="l">プラン</th>
+          <th>基本料金<br><span class="note">円/kW・月</span></th>
+          <th>電力量料金 夏季<br><span class="note">円/kWh(7〜9月)</span></th>
+          <th>電力量料金 他季<br><span class="note">円/kWh</span></th>
+          <th>燃料費調整<br><span class="note">円/kWh(毎月改定)</span></th>
+          <th>再エネ賦課金<br><span class="note">円/kWh</span></th>
+          <th>契約電力<br><span class="note">kW(入力)</span></th>
+          <th>使用量<br><span class="note">kWh/月(入力)</span></th>
+          <th>月額試算<br><span class="note">円(税込)</span></th>
+          <th>更新日</th>
+          <th class="l">出典・備考</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <footer>
+    <strong>月額試算の計算式:</strong>
+    基本料金 × 契約電力 × (185 − 力率)/100 +(電力量料金[季節別]+ 燃料費調整 + 再エネ賦課金)× 使用量
+    <ul>
+      <li>燃料費調整が未入力の行は 0 円/kWh として計算し、⚠ 表示します。毎月必ず各社公表値を入力してください。</li>
+      <li>単価編集はこの画面のブラウザにのみ保存されます(localStorage)。チームで共有する場合は「JSONエクスポート」した内容を rates.js に反映してください。</li>
+      <li>契約電力・使用量は試算用の入力であり、単価データには保存されません。</li>
+    </ul>
+  </footer>
+</main>
+
+<script>
+// =====================================================================
+// 大手電力10社 電力単価マスタデータ
+// ---------------------------------------------------------------------
+// 【毎月の更新手順】
+//  1. 各社の燃料費調整単価(毎月改定)を fuelAdjustment に入力し、
+//     fuelAdjustmentMonth を対象月に変更する
+//  2. 基本料金・電力量料金の改定があった行は該当単価を修正する
+//  3. 更新した行の updated を更新日(YYYY-MM-DD)に変更する
+//  4. 再エネ賦課金は毎年5月に全社一律で改定 → renewableLevy を更新
+//
+//  ※ ブラウザの編集モードから修正して「JSONエクスポート」でも可。
+//  ※ 単価はすべて税込・円。
+//  ※ 初期値は構築時点の参考値です。必ず各社公式ページ(sourceUrl)で
+//     確認のうえ更新してください。
+// =====================================================================
+
+const RATE_DATA = {
+  // 再生可能エネルギー発電促進賦課金(全社共通・円/kWh・毎年5月改定)
+  renewableLevy: {
+    price: 3.98,
+    fiscalYear: "2025年度",
+    updated: "2025-05-01",
+    note: "毎年5月に経済産業省が改定を公表",
+  },
+
+  // 急速充電器は高圧受電が基本のため、各社の高圧標準プランを掲載。
+  // 低圧(50kW未満の充電器等)のプランを追加する場合は行を追加してください。
+  companies: [
+    {
+      company: "北海道電力",
+      plan: "高圧電力",
+      voltage: "高圧",
+      basicRate: 2266.0,        // 基本料金 円/kW・月
+      energyRateSummer: 17.53,  // 電力量料金 夏季(7〜9月) 円/kWh
+      energyRateOther: 16.02,   // 電力量料金 その他季 円/kWh
+      fuelAdjustment: null,     // 燃料費調整単価 円/kWh(毎月更新・要入力)
+      fuelAdjustmentMonth: "",
+      sourceUrl: "https://www.hepco.co.jp/business/business/price_plan/",
+      updated: "2026-07-09",
+      note: "参考値・要確認",
+    },
+    {
+      company: "東北電力",
+      plan: "高圧電力",
+      voltage: "高圧",
+      basicRate: 1980.0,
+      energyRateSummer: 17.05,
+      energyRateOther: 15.84,
+      fuelAdjustment: null,
+      fuelAdjustmentMonth: "",
+      sourceUrl: "https://www.tohoku-epco.co.jp/pricemenu/biz/",
+      updated: "2026-07-09",
+      note: "参考値・要確認",
+    },
+    {
+      company: "東京電力エナジーパートナー",
+      plan: "業務用電力(高圧)",
+      voltage: "高圧",
+      basicRate: 2038.3,
+      energyRateSummer: 17.37,
+      energyRateOther: 16.31,
+      fuelAdjustment: null,
+      fuelAdjustmentMonth: "",
+      sourceUrl: "https://www.tepco.co.jp/ep/corporate/plan_h/",
+      updated: "2026-07-09",
+      note: "参考値・要確認",
+    },
+    {
+      company: "中部電力ミライズ",
+      plan: "高圧電力",
+      voltage: "高圧",
+      basicRate: 1870.0,
+      energyRateSummer: 16.91,
+      energyRateOther: 15.80,
+      fuelAdjustment: null,
+      fuelAdjustmentMonth: "",
+      sourceUrl: "https://miraiz.chuden.co.jp/business/electrify/",
+      updated: "2026-07-09",
+      note: "参考値・要確認",
+    },
+    {
+      company: "北陸電力",
+      plan: "高圧電力",
+      voltage: "高圧",
+      basicRate: 1760.0,
+      energyRateSummer: 15.52,
+      energyRateOther: 14.41,
+      fuelAdjustment: null,
+      fuelAdjustmentMonth: "",
+      sourceUrl: "https://www.rikuden.co.jp/kaisha_ryokin/",
+      updated: "2026-07-09",
+      note: "参考値・要確認",
+    },
+    {
+      company: "関西電力",
+      plan: "高圧電力AS",
+      voltage: "高圧",
+      basicRate: 2090.0,
+      energyRateSummer: 16.54,
+      energyRateOther: 15.43,
+      fuelAdjustment: null,
+      fuelAdjustmentMonth: "",
+      sourceUrl: "https://kepco.jp/corporate/ryokin/",
+      updated: "2026-07-09",
+      note: "参考値・要確認",
+    },
+    {
+      company: "中国電力",
+      plan: "高圧電力",
+      voltage: "高圧",
+      basicRate: 1925.0,
+      energyRateSummer: 17.16,
+      energyRateOther: 16.05,
+      fuelAdjustment: null,
+      fuelAdjustmentMonth: "",
+      sourceUrl: "https://www.energia.co.jp/biz/",
+      updated: "2026-07-09",
+      note: "参考値・要確認",
+    },
+    {
+      company: "四国電力",
+      plan: "高圧電力",
+      voltage: "高圧",
+      basicRate: 1870.0,
+      energyRateSummer: 16.82,
+      energyRateOther: 15.71,
+      fuelAdjustment: null,
+      fuelAdjustmentMonth: "",
+      sourceUrl: "https://www.yonden.co.jp/business/",
+      updated: "2026-07-09",
+      note: "参考値・要確認",
+    },
+    {
+      company: "九州電力",
+      plan: "高圧電力",
+      voltage: "高圧",
+      basicRate: 1760.0,
+      energyRateSummer: 15.91,
+      energyRateOther: 14.80,
+      fuelAdjustment: null,
+      fuelAdjustmentMonth: "",
+      sourceUrl: "https://www.kyuden.co.jp/business_index.html",
+      updated: "2026-07-09",
+      note: "参考値・要確認",
+    },
+    {
+      company: "沖縄電力",
+      plan: "業務用電力(高圧)",
+      voltage: "高圧",
+      basicRate: 1980.0,
+      energyRateSummer: 19.02,
+      energyRateOther: 19.02,
+      fuelAdjustment: null,
+      fuelAdjustmentMonth: "",
+      sourceUrl: "https://www.okiden.co.jp/business-support/",
+      updated: "2026-07-09",
+      note: "参考値・要確認(夏季区分なし)",
+    },
+  ],
+};
+</script>
+<script>
+(() => {
+  const STORAGE_KEY = "powerRateTracker.v1";
+  const tbody = document.getElementById("tbody");
+  const banner = document.getElementById("banner");
+  const levyInput = document.getElementById("levy");
+  const pfInput = document.getElementById("powerFactor");
+  const monthSel = document.getElementById("targetMonth");
+  let data = loadData();
+  let editing = false;
+  // 試算入力(契約電力・使用量)は単価データとは別に保持
+  const usage = data.companies.map(() => ({ kw: "", kwh: "" }));
+
+  function loadData() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch (e) { /* 破損時は初期データへ */ }
+    return structuredClone(RATE_DATA);
+  }
+  function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  // 計算対象月セレクタ(当月を初期選択)
+  const now = new Date();
+  for (let i = 0; i < 12; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth() + i - 3, 1);
+    const opt = document.createElement("option");
+    opt.value = `${d.getFullYear()}-${d.getMonth() + 1}`;
+    opt.textContent = `${d.getFullYear()}年${d.getMonth() + 1}月${[7,8,9].includes(d.getMonth() + 1) ? "(夏季)" : ""}`;
+    if (i === 3) opt.selected = true;
+    monthSel.appendChild(opt);
+  }
+
+  function isSummer() {
+    const m = Number(monthSel.value.split("-")[1]);
+    return m >= 7 && m <= 9;
+  }
+
+  function fmt(n, digits = 2) {
+    if (n === null || n === undefined || n === "" || isNaN(n)) return null;
+    return Number(n).toLocaleString("ja-JP", { minimumFractionDigits: digits, maximumFractionDigits: digits });
+  }
+
+  function calcRow(row, u) {
+    const kw = parseFloat(u.kw), kwh = parseFloat(u.kwh);
+    if (isNaN(kw) && isNaN(kwh)) return null;
+    const pf = parseFloat(pfInput.value) || 85;
+    const levy = parseFloat(levyInput.value) || 0;
+    const fuel = row.fuelAdjustment === null || row.fuelAdjustment === "" ? 0 : Number(row.fuelAdjustment);
+    const energyRate = isSummer() ? Number(row.energyRateSummer) : Number(row.energyRateOther);
+    const basic = isNaN(kw) ? 0 : Number(row.basicRate) * kw * (185 - pf) / 100;
+    const energy = isNaN(kwh) ? 0 : (energyRate + fuel + levy) * kwh;
+    return Math.round(basic + energy);
+  }
+
+  function render() {
+    levyInput.value = data.renewableLevy.price;
+    banner.innerHTML =
+      `📌 再エネ賦課金:<strong>${data.renewableLevy.fiscalYear} ${data.renewableLevy.price}円/kWh</strong>` +
+      `(更新日 ${data.renewableLevy.updated})/ 燃料費調整が未入力の会社は <strong>⚠ 要入力</strong> と表示されます。` +
+      ` 単価はすべて<strong>参考値</strong>のため、各社公式ページで確認のうえご利用ください。`;
+
+    tbody.innerHTML = "";
+    data.companies.forEach((row, i) => {
+      const tr = document.createElement("tr");
+      const u = usage[i];
+      const fuelMissing = row.fuelAdjustment === null || row.fuelAdjustment === "";
+      const total = calcRow(row, u);
+      tr.innerHTML = `
+        <td class="l"><strong>${row.company}</strong></td>
+        <td class="l">${row.plan}<br><span class="note">${row.voltage}</span></td>
+        <td class="num" data-field="basicRate">${fmt(row.basicRate)}</td>
+        <td class="num" data-field="energyRateSummer">${fmt(row.energyRateSummer)}</td>
+        <td class="num" data-field="energyRateOther">${fmt(row.energyRateOther)}</td>
+        <td class="num ${fuelMissing ? "missing" : ""}" data-field="fuelAdjustment">${
+          fuelMissing ? "⚠ 要入力" : fmt(row.fuelAdjustment)
+        }${row.fuelAdjustmentMonth ? `<br><span class="note">${row.fuelAdjustmentMonth}分</span>` : ""}</td>
+        <td class="num">${fmt(data.renewableLevy.price)}</td>
+        <td><input class="usage" data-kind="kw" data-i="${i}" type="number" min="0" step="1" value="${u.kw}" placeholder="未入力"></td>
+        <td><input class="usage" data-kind="kwh" data-i="${i}" type="number" min="0" step="1" value="${u.kwh}" placeholder="未入力"></td>
+        <td class="total num">${total === null ? "—" : total.toLocaleString("ja-JP") + "円"}</td>
+        <td><span class="date-badge">${row.updated}</span></td>
+        <td class="l"><a href="${row.sourceUrl}" target="_blank" rel="noopener">公式料金ページ ↗</a><br><span class="note">${row.note || ""}</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    if (editing) {
+      tbody.querySelectorAll("td[data-field]").forEach(td => {
+        const i = td.parentElement.rowIndex - 1;
+        const field = td.dataset.field;
+        const v = data.companies[i][field];
+        td.textContent = v === null || v === "" ? "" : v;
+        td.contentEditable = "true";
+      });
+    }
+
+    tbody.querySelectorAll("input.usage").forEach(inp => {
+      inp.addEventListener("input", () => {
+        usage[inp.dataset.i][inp.dataset.kind] = inp.value;
+        recalcTotals();
+      });
+    });
+  }
+
+  function recalcTotals() {
+    tbody.querySelectorAll("tr").forEach((tr, i) => {
+      const total = calcRow(data.companies[i], usage[i]);
+      tr.querySelector("td.total").textContent = total === null ? "—" : total.toLocaleString("ja-JP") + "円";
+    });
+  }
+
+  // 編集モード:単価セルを直接編集 → 保存時に変更行の更新日を自動で今日に
+  document.getElementById("editBtn").addEventListener("click", function () {
+    if (!editing) {
+      editing = true;
+      this.textContent = "💾 保存(変更行の更新日を自動更新)";
+      this.classList.add("primary");
+      render();
+    } else {
+      const today = new Date().toISOString().slice(0, 10);
+      tbody.querySelectorAll("td[data-field]").forEach(td => {
+        const i = td.parentElement.rowIndex - 1;
+        const field = td.dataset.field;
+        const raw = td.textContent.trim().replace(/,/g, "");
+        const newVal = raw === "" ? null : parseFloat(raw);
+        const oldVal = data.companies[i][field];
+        if ((isNaN(newVal) ? null : newVal) !== oldVal) {
+          data.companies[i][field] = isNaN(newVal) ? null : newVal;
+          data.companies[i].updated = today;
+          if (field === "fuelAdjustment") {
+            const m = monthSel.value.split("-");
+            data.companies[i].fuelAdjustmentMonth = `${m[0]}年${m[1]}月`;
+          }
+        }
+      });
+      const levyVal = parseFloat(levyInput.value);
+      if (!isNaN(levyVal) && levyVal !== data.renewableLevy.price) {
+        data.renewableLevy.price = levyVal;
+        data.renewableLevy.updated = today;
+      }
+      saveData();
+      editing = false;
+      this.textContent = "✏️ 単価を編集";
+      this.classList.remove("primary");
+      render();
+    }
+  });
+
+  document.getElementById("exportBtn").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `power-rates-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  document.getElementById("importBtn").addEventListener("click", () =>
+    document.getElementById("importFile").click());
+  document.getElementById("importFile").addEventListener("change", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const imported = JSON.parse(reader.result);
+        if (!imported.companies || !imported.renewableLevy) throw new Error("形式不正");
+        data = imported;
+        saveData();
+        render();
+      } catch (err) {
+        alert("JSONの読み込みに失敗しました: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    if (!confirm("ブラウザに保存した編集内容を破棄し、rates.js の初期データに戻します。よろしいですか?")) return;
+    localStorage.removeItem(STORAGE_KEY);
+    data = structuredClone(RATE_DATA);
+    render();
+  });
+
+  monthSel.addEventListener("change", render);
+  pfInput.addEventListener("input", recalcTotals);
+  levyInput.addEventListener("input", recalcTotals);
+
+  render();
+})();
+</script>
+</body>
+</html>

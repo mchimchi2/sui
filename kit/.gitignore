@@ -12,3 +12,5 @@ projects/**/*.wav
 projects/**/sheet.png
 node_modules/
 __pycache__/
+projects/**/snapshots/
+projects/**/timing.json

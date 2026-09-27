@@ -1,0 +1,61 @@
+@font-face { font-family:"SS"; font-weight:700; src: local("Noto Sans CJK JP Bold"); }
+@font-face { font-family:"SS"; font-weight:900; src: local("Noto Sans CJK JP Black"); }
+@font-face { font-family:"SR"; font-weight:900; src: local("Noto Serif CJK JP Black"); }
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { width:1080px; height:1920px; overflow:hidden; background:#15324a; }
+#root { position:relative; width:1080px; height:1920px; overflow:hidden; background:#15324a; font-family:"SS",sans-serif; color:#fff; }
+.abs { position:absolute; }
+.cimg { position:absolute; inset:0; width:900px; height:900px; opacity:0; }
+.chip { position:absolute; left:40px; top:60px; z-index:60; font-weight:700; font-size:28px; color:#0b1a2a; background:rgba(255,250,240,0.95); padding:10px 24px; border-radius:40px; }
+.acct { position:absolute; right:40px; top:68px; z-index:60; font-weight:700; font-size:26px; color:rgba(255,255,255,0.85); }
+.ai { position:absolute; right:40px; bottom:36px; z-index:60; font-weight:700; font-size:22px; color:rgba(255,255,255,0.75); }
+/* 袋文字テロップ */
+.telop { left:0; top:835px; width:1080px; text-align:center; z-index:30; transform-origin:50% 50%; }
+.tl { font-weight:900; font-size:74px; line-height:1.22; color:#fff; -webkit-text-stroke:16px #0b1a2a; paint-order:stroke fill; text-shadow:0 8px 0 rgba(0,0,0,0.25); letter-spacing:1px; }
+.tl.hl { color:#ffd84a; }
+/* カード共通 */
+.card { left:60px; top:170px; width:960px; height:640px; z-index:20; text-align:center; }
+.lbl { font-weight:900; font-size:30px; letter-spacing:12px; color:#9fd3f0; margin-top:20px; }
+.route { display:flex; align-items:center; justify-content:center; margin-top:60px; }
+.dot { width:44px; height:44px; border-radius:50%; background:#fff; }
+.dot.o { background:#15324a; border:8px solid #ffd84a; }
+.bar { width:640px; height:10px; background:rgba(255,255,255,0.3); position:relative; }
+.run { position:absolute; left:0; top:0; width:100%; height:100%; background:#ffd84a; transform-origin:0 50%; }
+.route-n { display:flex; justify-content:space-between; width:820px; margin:14px auto 0; font-weight:900; font-size:40px; }
+.big { margin-top:10px; font-weight:900; line-height:1; }
+.big .num { font-size:340px; letter-spacing:-8px; }
+.big .unit { font-size:120px; margin-left:10px; }
+.sea { position:relative; width:960px; height:620px; border-radius:40px; overflow:hidden; border:8px solid #fff;
+  background:linear-gradient(to bottom,#1d3b5c 0%,#4f7aa0 32%,#f0c08c 48%,#f6d4a2 50%,#2f6b8c 51%,#154063 80%,#0e2c47 100%); }
+.sun { position:absolute; left:400px; top:180px; width:160px; height:160px; border-radius:50%; background:radial-gradient(circle,#fff6e0 0%,#ffd08a 55%,rgba(255,208,138,0) 72%); }
+.glint { position:absolute; left:450px; top:320px; width:60px; height:300px; background:repeating-linear-gradient(to bottom,rgba(255,238,205,0.8) 0 5px,rgba(255,238,205,0) 5px 22px); }
+.tub { position:absolute; left:-20px; top:470px; width:1000px; height:200px; background:#3b2618; border-radius:40px 40px 0 0; }
+.badge { position:absolute; left:30px; top:30px; background:#ffd84a; color:#0b1a2a; font-weight:900; font-size:44px; padding:10px 26px; border-radius:16px; }
+.img-note { position:absolute; right:26px; bottom:22px; font-size:22px; font-weight:700; color:rgba(255,255,255,0.8); }
+.vt { position:absolute; left:330px; top:10px; writing-mode:vertical-rl; font-family:"SR",serif; font-weight:900; font-size:118px; line-height:1.12; letter-spacing:2px; height:640px; color:#fff; -webkit-text-stroke:10px #0b1a2a; paint-order:stroke fill; }
+.vsub { position:absolute; left:640px; top:120px; font-weight:900; font-size:40px; line-height:1.4; color:#ffd84a; text-align:left; }
+.steam i { position:absolute; top:420px; width:120px; height:200px; border-radius:60px; background:radial-gradient(rgba(255,255,255,0.5),rgba(255,255,255,0)); filter:blur(10px); }
+.steam i:nth-child(1){left:200px}.steam i:nth-child(2){left:680px}.steam i:nth-child(3){left:780px;top:300px}
+.panel { margin:34px auto 0; width:900px; background:rgba(255,250,240,0.97); border-radius:36px; padding:26px 44px; color:#0b1a2a; text-align:left; }
+.row { display:flex; align-items:center; gap:24px; font-weight:900; font-size:52px; padding:26px 0; border-bottom:3px dashed #d6ccba; }
+.row:last-child { border-bottom:none; font-size:44px; }
+.ok { width:70px; height:70px; flex:none; border-radius:50%; background:#1f6f9a; color:#fff; font-size:44px; display:flex; align-items:center; justify-content:center; }
+.warn-tag { display:inline-block; margin-top:20px; background:#ffd84a; color:#0b1a2a; font-weight:900; font-size:48px; padding:12px 34px; border-radius:16px; }
+.warn-big { font-weight:900; font-size:300px; line-height:1.1; color:#ffd84a; -webkit-text-stroke:14px #0b1a2a; paint-order:stroke fill; }
+.warn-big span { font-size:110px; color:#fff; margin-left:12px; }
+.warn-sub { font-weight:900; font-size:46px; }
+.rooms-h { font-weight:900; font-size:96px; color:#fff; -webkit-text-stroke:12px #0b1a2a; paint-order:stroke fill; margin-top:10px; }
+.tiles { display:flex; gap:40px; justify-content:center; margin-top:40px; }
+.tile { width:420px; height:280px; border-radius:32px; background:rgba(255,250,240,0.97); color:#0b1a2a; font-weight:900; font-size:44px; padding-top:44px; }
+.tile b { display:block; font-size:120px; color:#1f6f9a; line-height:1.2; }
+.stamp { position:absolute; left:250px; top:40px; width:460px; height:460px; border-radius:50%; border:18px solid #d8412b; background:rgba(255,250,240,0.95); display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.stamp b { font-family:"SR",serif; font-weight:900; font-size:170px; color:#d8412b; line-height:1; }
+.stamp span { font-weight:900; font-size:52px; color:#d8412b; margin-top:8px; }
+.cf { position:absolute; top:0; border-radius:4px; }
+.cta-b { font-size:84px; margin-top:0; }
+.cta { font-weight:900; font-size:86px; line-height:1.25; -webkit-text-stroke:14px #0b1a2a; paint-order:stroke fill; }
+.src { margin-top:22px; font-weight:700; font-size:24px; line-height:1.6; color:rgba(255,255,255,0.85); }
+.ep { display:inline-block; margin-top:60px; background:#ffd84a; color:#0b1a2a; font-weight:900; font-size:52px; padding:12px 36px; border-radius:18px; }
+.ep-n { font-weight:900; font-size:150px; line-height:1.1; color:#fff; -webkit-text-stroke:14px #0b1a2a; paint-order:stroke fill; margin-top:20px; }
+.ep-t { font-weight:900; font-size:64px; line-height:1.3; color:#9fd3f0; }
+.cta-a { font-weight:900; font-size:48px; color:#ffd84a; margin-top:10px; }

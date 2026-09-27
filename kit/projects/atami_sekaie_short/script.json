@@ -1,0 +1,107 @@
+[
+ {
+  "id": "hook",
+  "pose": "serious",
+  "shot": "close",
+  "voice": "まだ、泊まってないけど、審査するでちゅ。",
+  "telop": "まだ泊まってないけど\n審査するでちゅ。",
+  "card": {
+   "type": "title"
+  }
+ },
+ {
+  "id": "intro",
+  "pose": "serious",
+  "shot": "wide",
+  "voice": "今日は、熱海の、アタミせかいえ。東京駅から、45分でちゅ。",
+  "telop": "熱海「ATAMI せかいえ」",
+  "card": {
+   "type": "big",
+   "big": "45",
+   "unit": "分",
+   "sub": "東京駅から"
+  }
+ },
+ {
+  "id": "bath",
+  "pose": "shock",
+  "shot": "close",
+  "voice": "え!?全部のお部屋に、海が見える、ろてんぶろ、でちゅか。",
+  "telop": "全室に\n海が見える露天風呂!?",
+  "card": {
+   "type": "sea"
+  }
+ },
+ {
+  "id": "onsen",
+  "pose": "serious",
+  "shot": "wide",
+  "voice": "しかも、源泉かけ流し。ずるいでちゅ。",
+  "telop": "しかも源泉かけ流し。\nずるいでちゅ。",
+  "card": {
+   "type": "vert",
+   "text": "源泉かけ流し"
+  }
+ },
+ {
+  "id": "kids",
+  "pose": "serious",
+  "shot": "wide",
+  "voice": "添い寝は、ゼロ歳から、オーケー。お子様会席も、あるでちゅ。",
+  "telop": "添い寝0歳〜OK\nお子様会席もあるでちゅ",
+  "card": {
+   "type": "check",
+   "items": [
+    "添い寝 0〜12歳OK",
+    "お子様会席あり",
+    "熱海駅から無料送迎(要予約)"
+   ]
+  }
+ },
+ {
+  "id": "warn",
+  "pose": "shock",
+  "shot": "close",
+  "voice": "でも、待って!新しい、月の道は、6歳からでちゅ。",
+  "telop": "でも待って!\n新棟〈月の道〉は6歳から",
+  "card": {
+   "type": "warn",
+   "big": "6歳",
+   "sub": "新棟〈月の道〉は6歳以上"
+  }
+ },
+ {
+  "id": "tip",
+  "pose": "serious",
+  "shot": "wide",
+  "voice": "赤ちゃん連れは、せかいえとうを、選ぶでちゅよ。",
+  "telop": "赤ちゃん連れは\n〈せかいえ棟〉を選ぶでちゅよ",
+  "card": {
+   "type": "rooms",
+   "items": [
+    "スーペリア 48㎡",
+    "スイート 78㎡"
+   ]
+  }
+ },
+ {
+  "id": "judge",
+  "pose": "smile",
+  "shot": "close",
+  "voice": "判定は、、合格でちゅ!",
+  "telop": "判定は…合格でちゅ!",
+  "card": {
+   "type": "stamp"
+  }
+ },
+ {
+  "id": "cta",
+  "pose": "smile",
+  "shot": "wide",
+  "voice": "保存して、次の旅の、候補にするでちゅ。",
+  "telop": "保存して\n次の旅の候補にするでちゅ",
+  "card": {
+   "type": "cta"
+  }
+ }
+]

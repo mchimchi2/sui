@@ -15,6 +15,7 @@
 input/                        手元の写真・動画を元のファイル名のまま置く(IMG_xxxx.jpeg / .mov)
 projects/hakone_first_trip/   家族旅行シネマティック動画(Python版とHyperFrames版)
 projects/suishoen_showreel/   翠松園30秒ショーリール(HyperFrames、3パート×10秒)
+projects/atami_sekaie_reel/   ATAMI せかいえ「行きたい宿リスト」リール(未宿泊・自作グラフィック)
 docs/                         方針・宿リスト・教訓
 ```
 

@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>ATAMI せかいえ 絵コンテ</title>
+<style>
+@font-face { font-family:"SR"; font-weight:400; src: local("Noto Serif CJK JP"); }
+@font-face { font-family:"SR"; font-weight:700; src: local("Noto Serif CJK JP Bold"); }
+@font-face { font-family:"SR"; font-weight:900; src: local("Noto Serif CJK JP Black"); }
+@font-face { font-family:"SS"; font-weight:400; src: local("Noto Sans CJK JP"); }
+@font-face { font-family:"SS"; font-weight:700; src: local("Noto Sans CJK JP Bold"); }
+@font-face { font-family:"SS"; font-weight:900; src: local("Noto Sans CJK JP Black"); }
+:root { --ink:#0b1a2a; --sea:#1f4e6b; --sea2:#6fa8c4; --dawn:#f2c48d; --ivory:#f5efe4; --gold:#d9a95b; --red:#c4452c; --skin:#f6d7bf; }
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { width:1080px; height:1920px; overflow:hidden; background:var(--ink); }
+.scene { position:absolute; inset:0; overflow:hidden; font-family:"SR",serif; color:var(--ivory); display:none; }
+.scene.on { display:block; }
+.abs { position:absolute; }
+.c { left:0; width:1080px; text-align:center; }
+.lbl { font-family:"SS",sans-serif; letter-spacing:12px; font-size:26px; color:var(--sea2); }
+.chip { position:absolute; left:48px; top:64px; font-family:"SS",sans-serif; font-size:26px; font-weight:700; letter-spacing:2px;
+        color:var(--ink); background:rgba(245,239,228,0.92); padding:10px 22px; border-radius:40px; z-index:50; }
+.acct { position:absolute; right:48px; top:70px; font-family:"SS",sans-serif; font-size:24px; color:rgba(245,239,228,0.75); letter-spacing:2px; z-index:50; }
+.sea-bg { position:absolute; inset:0; background:linear-gradient(to bottom,#12263d 0%,#35577a 30%,#e9b98a 47%,#f2c48d 49%,#2a5d7c 50%,#123049 75%,#0b1a2a 100%); }
+.sun { position:absolute; left:440px; top:790px; width:200px; height:200px; border-radius:50%; background:radial-gradient(circle,#fff4dc 0%,#f7cf92 55%,rgba(247,207,146,0) 72%); }
+.glint { position:absolute; left:500px; top:960px; width:80px; height:560px; background:repeating-linear-gradient(to bottom,rgba(255,236,200,0.75) 0 6px,rgba(255,236,200,0) 6px 26px); filter:blur(1px); }
+.card { position:absolute; left:90px; width:900px; background:rgba(245,239,228,0.96); color:var(--ink); border-radius:28px; padding:48px 56px; }
+.row { display:flex; align-items:center; gap:28px; font-family:"SS",sans-serif; font-weight:700; font-size:48px; padding:22px 0; border-bottom:2px dashed #c9bfae; }
+.row:last-child { border-bottom:none; }
+.ok { width:66px; height:66px; border-radius:50%; background:var(--sea); color:#fff; display:flex; align-items:center; justify-content:center; font-size:40px; flex:none; }
+.row small { display:block; font-weight:400; font-size:28px; color:#5d6a74; margin-top:4px; }
+.note { position:absolute; left:0; bottom:0; width:1080px; padding:20px 30px; font-family:"SS",sans-serif; font-size:22px; color:#ffe39a; background:rgba(0,0,0,0.55); z-index:60; letter-spacing:1px; }
+</style>
+</head>
+<body>
+
+<!-- 赤ちゃん審査員(自作イラスト)。mood: serious / smile -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="baby-base">
+      <circle cx="200" cy="210" r="170" fill="var(--skin)"/>
+      <circle cx="40" cy="220" r="34" fill="var(--skin)"/><circle cx="360" cy="220" r="34" fill="var(--skin)"/>
+      <path d="M185 45 q20 -40 45 -8 q-25 -8 -28 22" fill="none" stroke="#6b4a35" stroke-width="10" stroke-linecap="round"/>
+      <rect x="70" y="345" width="260" height="70" rx="16" fill="var(--sea)"/>
+      <text x="200" y="393" text-anchor="middle" font-family="SS" font-weight="900" font-size="38" fill="#fff" letter-spacing="6">審査員</text>
+    </g>
+    <g id="face-serious">
+      <line x1="112" y1="160" x2="166" y2="168" stroke="#4a3426" stroke-width="10" stroke-linecap="round"/>
+      <line x1="234" y1="168" x2="288" y2="160" stroke="#4a3426" stroke-width="10" stroke-linecap="round"/>
+      <circle cx="140" cy="205" r="15" fill="#2b1d14"/><circle cx="260" cy="205" r="15" fill="#2b1d14"/>
+      <line x1="170" y1="285" x2="230" y2="285" stroke="#4a3426" stroke-width="10" stroke-linecap="round"/>
+    </g>
+    <g id="face-smile">
+      <path d="M118 210 q22 -28 44 0" fill="none" stroke="#2b1d14" stroke-width="11" stroke-linecap="round"/>
+      <path d="M238 210 q22 -28 44 0" fill="none" stroke="#2b1d14" stroke-width="11" stroke-linecap="round"/>
+      <ellipse cx="105" cy="255" rx="30" ry="18" fill="#f3a59a" opacity="0.7"/><ellipse cx="295" cy="255" rx="30" ry="18" fill="#f3a59a" opacity="0.7"/>
+      <path d="M150 260 q50 70 100 0 z" fill="#8a2f2a"/><path d="M168 290 q32 22 64 0" fill="#f08b86"/>
+    </g>
+  </defs>
+</svg>
+
+<!-- S1 フック -->
+<div class="scene" id="s1" style="background:var(--ink)">
+  <div class="chip">未宿泊・公式情報より</div><div class="acct">@chibi.shinsain</div>
+  <div class="abs c lbl" style="top:330px">ATAMI · IZUSAN</div>
+  <div class="abs c" style="top:400px;font-size:64px;font-weight:700;letter-spacing:4px">まだ泊まってないけど、</div>
+  <svg class="abs" style="left:340px;top:560px" width="400" height="430" viewBox="0 0 400 430"><use href="#baby-base"/><use href="#face-serious"/></svg>
+  <div class="abs c" style="top:1080px;font-size:104px;font-weight:900;line-height:1.25">ちび審査員、<br>熱海の宿を<br>審査します。</div>
+  <div class="abs c" style="top:1560px;font-family:SS;font-size:34px;color:var(--dawn);letter-spacing:4px">ATAMI せかいえ</div>
+</div>
+
+<!-- S2 アクセス -->
+<div class="scene" id="s2" style="background:linear-gradient(#0b1a2a,#15324a)">
+  <div class="chip">未宿泊・公式情報より</div><div class="acct">@chibi.shinsain</div>
+  <div class="abs c lbl" style="top:420px">ACCESS</div>
+  <div class="abs" style="left:150px;top:640px;width:780px;height:6px;background:rgba(245,239,228,0.35)"></div>
+  <div class="abs" style="left:150px;top:640px;width:560px;height:6px;background:var(--dawn)"></div>
+  <div class="abs" style="left:126px;top:618px;width:50px;height:50px;border-radius:50%;background:var(--ivory)"></div>
+  <div class="abs" style="left:904px;top:618px;width:50px;height:50px;border-radius:50%;border:6px solid var(--dawn);background:var(--ink)"></div>
+  <div class="abs" style="left:690px;top:612px;width:62px;height:62px;border-radius:50%;background:var(--dawn);box-shadow:0 0 30px var(--dawn)"></div>
+  <div class="abs" style="left:90px;top:700px;font-family:SS;font-size:40px;font-weight:700">東京駅</div>
+  <div class="abs" style="left:880px;top:700px;font-family:SS;font-size:40px;font-weight:700">熱海</div>
+  <div class="abs c" style="top:860px;font-family:SS;font-weight:900;font-size:420px;line-height:1;color:var(--ivory)">45<span style="font-size:120px;font-family:SR;font-weight:700">分</span></div>
+  <div class="abs c" style="top:1340px;font-size:54px;font-weight:700;letter-spacing:4px">東京駅から、海の宿へ。</div>
+  <div class="abs c" style="top:1440px;font-family:SS;font-size:32px;color:#b9c9d4">熱海駅から車で約5分(無料送迎・要予約)</div>
+</div>
+
+<!-- S3 全室露天風呂 -->
+<div class="scene" id="s3">
+  <div class="sea-bg"></div><div class="sun"></div><div class="glint"></div>
+  <!-- 手前の湯船のふち(自作シルエット) -->
+  <div class="abs" style="left:-40px;top:1420px;width:1160px;height:560px;background:#1b130d;border-radius:60px 60px 0 0"></div>
+  <div class="abs" style="left:20px;top:1450px;width:1040px;height:140px;background:linear-gradient(#6c9cb3,#2f5f78);border-radius:30px;opacity:0.9"></div>
+  <div class="abs" style="left:180px;top:1300px;width:160px;height:180px;border-radius:50%;background:radial-gradient(rgba(255,255,255,0.35),rgba(255,255,255,0));filter:blur(12px)"></div>
+  <div class="abs" style="left:640px;top:1270px;width:220px;height:220px;border-radius:50%;background:radial-gradient(rgba(255,255,255,0.3),rgba(255,255,255,0));filter:blur(14px)"></div>
+  <div class="chip">未宿泊・公式情報より</div><div class="acct">@chibi.shinsain</div>
+  <div class="abs c lbl" style="top:260px;color:var(--dawn)">OPEN-AIR BATH IN EVERY ROOM</div>
+  <div class="abs c" style="top:330px;font-size:96px;font-weight:900;line-height:1.3;text-shadow:0 4px 30px rgba(0,0,0,0.4)">全室に、<br>太平洋を望む<br>露天風呂。</div>
+  <div class="abs c" style="top:1640px;font-family:SS;font-size:34px;color:#e9dccb;letter-spacing:3px">部屋のお風呂なら、赤ちゃんとゆっくり入れそう</div>
+</div>
+
+<!-- S4 源泉かけ流し -->
+<div class="scene" id="s4" style="background:radial-gradient(circle at 50% 45%,#1f4e6b,#0b1a2a 70%)">
+  <div class="chip">未宿泊・公式情報より</div><div class="acct">@chibi.shinsain</div>
+  <div class="abs" style="left:520px;top:300px;writing-mode:vertical-rl;font-size:170px;font-weight:900;letter-spacing:18px;line-height:1">源泉<br>かけ流し</div>
+  <div class="abs" style="left:300px;top:420px;writing-mode:vertical-rl;font-size:48px;font-weight:700;letter-spacing:10px;color:var(--dawn)">鎌倉時代から続く、伊豆山温泉</div>
+  <div class="abs c" style="top:1560px;font-family:SS;font-size:30px;color:#b9c9d4;line-height:1.6">カルシウム・ナトリウム－塩化物・硫酸塩温泉<br>(低張性・弱アルカリ性・高温泉)</div>
+</div>
+
+<!-- S5 子連れチェック -->
+<div class="scene" id="s5" style="background:linear-gradient(#15324a,#0b1a2a)">
+  <div class="chip">未宿泊・公式情報より</div><div class="acct">@chibi.shinsain</div>
+  <div class="abs c lbl" style="top:250px;color:var(--dawn)">KIDS CHECK</div>
+  <div class="abs c" style="top:310px;font-size:84px;font-weight:900">子連れチェック</div>
+  <div class="card" style="top:520px">
+    <div class="row"><div class="ok">✓</div><div>添い寝 0〜12歳OK<small>小学生まで添い寝で予約できる</small></div></div>
+    <div class="row"><div class="ok">✓</div><div>お子様会席あり<small>子ども用の夕食・朝食を用意</small></div></div>
+    <div class="row"><div class="ok">✓</div><div>熱海駅から無料送迎<small>事前予約制</small></div></div>
+    <div class="row"><div class="ok">✓</div><div>客室48㎡〜<small>せかいえ棟 スーペリア/スイート</small></div></div>
+  </div>
+  <svg class="abs" style="left:700px;top:1440px" width="300" height="322" viewBox="0 0 400 430"><use href="#baby-base"/><use href="#face-serious"/></svg>
+  <div class="abs" style="left:120px;top:1560px;font-size:52px;font-weight:700">ふむふむ…</div>
+</div>
+
+<!-- S6 注意(保存ポイント) -->
+<div class="scene" id="s6" style="background:var(--ink)">
+  <div class="chip">未宿泊・公式情報より</div><div class="acct">@chibi.shinsain</div>
+  <div class="abs" style="left:90px;top:300px;font-family:SS;font-weight:900;font-size:44px;color:var(--ink);background:#ffd24a;padding:10px 28px;border-radius:12px">⚠ 予約前に要チェック</div>
+  <div class="abs" style="left:90px;top:440px;font-size:96px;font-weight:900;line-height:1.3">新棟<span style="color:var(--dawn)">〈月の道〉</span>は<br><span style="font-family:SS;font-size:200px;color:#ffd24a">6歳</span>以上</div>
+  <div class="abs" style="left:90px;top:900px;width:900px;height:4px;background:rgba(245,239,228,0.25)"></div>
+  <div class="abs" style="left:90px;top:960px;font-size:60px;font-weight:700;line-height:1.5">赤ちゃん連れは<br><span style="font-size:110px;font-weight:900;color:var(--sea2)">〈せかいえ棟〉</span>へ</div>
+  <div class="abs" style="left:90px;top:1330px;font-family:SS;font-size:34px;color:#b9c9d4;line-height:1.7">オーシャンビュースーペリア 48㎡<br>オーシャンビュースイート 78㎡</div>
+  <div class="abs" style="right:90px;top:1600px;font-family:SS;font-weight:900;font-size:40px;color:var(--ink);background:var(--ivory);padding:14px 30px;border-radius:40px">🔖 保存しておくと安心</div>
+</div>
+
+<!-- S7 審査結果 -->
+<div class="scene" id="s7">
+  <div class="sea-bg"></div><div class="sun"></div>
+  <div class="abs" style="inset:0;background:rgba(11,26,42,0.35)"></div>
+  <div class="chip">未宿泊・公式情報より</div><div class="acct">@chibi.shinsain</div>
+  <div class="abs c lbl" style="top:280px;color:var(--ivory)">RESULT</div>
+  <div class="abs c" style="top:340px;font-size:72px;font-weight:700">ちび審査員の判定は…</div>
+  <svg class="abs" style="left:290px;top:560px" width="500" height="537" viewBox="0 0 400 430"><use href="#baby-base"/><use href="#face-smile"/></svg>
+  <div class="abs" style="left:560px;top:1060px;width:400px;height:400px;border:14px solid var(--red);border-radius:50%;transform:rotate(-12deg);display:flex;align-items:center;justify-content:center;flex-direction:column;background:rgba(245,239,228,0.9)">
+    <div style="font-size:120px;font-weight:900;color:var(--red);line-height:1">合格</div>
+    <div style="font-family:SS;font-size:40px;font-weight:900;color:var(--red);letter-spacing:4px;margin-top:10px">行きたい!</div>
+  </div>
+  <div class="abs" style="left:90px;top:1560px;font-size:46px;font-weight:700;line-height:1.5">海を見ながら、<br>家族だけのお風呂。</div>
+</div>
+
+<!-- S8 CTA・出典 -->
+<div class="scene" id="s8" style="background:var(--ink)">
+  <div class="chip">未宿泊・公式情報より</div><div class="acct">@chibi.shinsain</div>
+  <div class="abs c" style="top:520px;font-size:120px;font-weight:900;line-height:1.3">保存して、<br>次の旅の<br>候補に。</div>
+  <div class="abs c" style="top:1030px;font-family:SS;font-size:40px;color:var(--dawn);letter-spacing:4px">フォローで、子連れ宿を毎週審査中</div>
+  <div class="abs" style="left:90px;top:1300px;width:900px;border-top:2px solid rgba(245,239,228,0.3);padding-top:36px;font-family:SS;font-size:28px;color:#aebbc6;line-height:1.8">
+    ATAMI せかいえ ｜ 静岡県熱海市伊豆山<br>
+    ※当アカウントは未宿泊です。内容は公式サイト・予約サイトの情報(2026年9月時点)より。<br>
+    ※料金・条件は変わることがあります。予約前に公式サイトでご確認ください。<br>
+    ※映像はイメージ(自作グラフィック)です。
+  </div>
+</div>
+
+<div class="note" id="note"></div>
+<script>
+  const notes = {
+    s1:"0.0–2.5s  フック: 真顔の審査員がドン → 文字が1文字ずつ落ちる",
+    s2:"2.5–5.0s  光の点が東京→熱海へ走り「45分」がカウントアップ",
+    s3:"5.0–8.5s  ★商用可フリー素材の海+露天風呂映像に差し替え候補(なければこのグラフィックでゆっくりパン)",
+    s4:"8.5–11.0s  縦書きの「源泉かけ流し」が湯気と一緒に立ち上がる",
+    s5:"11.0–14.5s チェックが1行ずつ付く(ポン音×4)。審査員が下から覗く",
+    s6:"14.5–17.5s 警告音→「6歳」がハードカットで拡大。保存を促すポイント",
+    s7:"17.5–20.5s 真顔→笑顔に切替え+ハンコ(ベル+インパクト音)",
+    s8:"20.5–23.0s CTA+出典。キャプションにも同じ注記を入れる"
+  };
+  const s = new URLSearchParams(location.search).get("s") || "s1";
+  document.getElementById(s).classList.add("on");
+  document.getElementById("note").textContent = new URLSearchParams(location.search).has("clean") ? "" : notes[s];
+  if (!document.getElementById("note").textContent) document.getElementById("note").style.display="none";
+</script>
+</body>
+</html>

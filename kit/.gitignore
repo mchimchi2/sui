@@ -1,0 +1,14 @@
+# 写真・動画(顔・宿泊者名・位置情報を含むためコミットしない)
+input/*
+!input/.gitkeep
+# 生成物
+projects/**/assets/
+projects/**/out/
+projects/**/p1/
+projects/**/p2/
+projects/**/p3/
+projects/**/*.mp4
+projects/**/*.wav
+projects/**/sheet.png
+node_modules/
+__pycache__/

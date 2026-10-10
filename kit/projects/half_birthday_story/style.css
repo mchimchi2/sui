@@ -1,0 +1,26 @@
+@font-face { font-family:"SS"; font-weight:900; src: local("Noto Sans CJK JP Black"); }
+@font-face { font-family:"SS"; font-weight:700; src: local("Noto Sans CJK JP Bold"); }
+@font-face { font-family:"EM"; src: local("Noto Color Emoji"); }
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { width:1080px; height:1920px; overflow:hidden; background:#000; }
+#root { position:relative; width:1080px; height:1920px; overflow:hidden; background:#000; font-family:"SS","EM",sans-serif; color:#fff; }
+.abs { position:absolute; }
+.shot { position:absolute; inset:0; overflow:hidden; }
+.ph { position:absolute; inset:0; background-size:cover; background-position:center; }
+.tint { inset:0; mix-blend-mode:screen; opacity:0; }
+/* ストーリーは上下にアプリのUIが重なるので、文字は y=300〜1500 に収める */
+.txt { left:0; width:1080px; text-align:center; z-index:30; transform-origin:50% 50%; }
+.tag { left:0; width:1080px; top:270px; text-align:center; z-index:30; font-weight:900; font-size:30px; letter-spacing:6px; color:#fff;
+  text-shadow:0 0 10px #ff3fa4, 0 0 24px #ff3fa4; }
+.neon .s, .plain .s { font-weight:900; font-size:56px; line-height:1.3; }
+.neon .l { font-weight:900; font-size:96px; line-height:1.25; color:#fff;
+  text-shadow:0 0 8px #fff, 0 0 18px #ff3fa4, 0 0 40px #ff3fa4, 0 0 70px #ff3fa4; }
+.neon .s { color:#bff4ff; text-shadow:0 0 10px #29c8ff, 0 0 26px #29c8ff; }
+.cd { font-weight:900; font-size:380px; line-height:1; color:#fff; text-shadow:0 0 20px #29c8ff, 0 0 60px #29c8ff, 0 0 110px #ff3fa4; }
+.hb { font-weight:900; font-style:italic; font-size:150px; line-height:1.0; letter-spacing:-2px; color:#fff;
+  text-shadow:0 0 10px #fff, 0 0 30px #ff3fa4, 0 0 70px #ff3fa4; transform:skewX(-6deg); }
+.plain .s, .plain .l, .plain .xl, .ask { color:#fff; -webkit-text-stroke:14px #111; paint-order:stroke fill; }
+.plain .l { font-weight:900; font-size:96px; line-height:1.25; }
+.plain .xl { font-weight:900; font-size:132px; line-height:1.2; color:#ffe14a; }
+.hb2 { font-weight:900; font-style:italic; font-size:118px; line-height:1.05; color:#fff; text-shadow:0 0 10px #fff, 0 0 30px #ff3fa4, 0 0 60px #ff3fa4; }
+.ask { display:inline-block; font-weight:900; font-size:64px; background:rgba(255,63,164,0.9); -webkit-text-stroke:0; padding:14px 40px; border-radius:60px; box-shadow:0 0 30px rgba(255,63,164,0.8); }
